@@ -1,11 +1,9 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState, useRef } from "react";
 import * as poseDetection from "@tensorflow-models/pose-detection";
 // import * as tf from "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-webgl";
 import Webcam from "react-webcam";
-import { drawGoodPostureHeight } from "./draw_utils";
+import { drawGoodPostureHeight } from "./modules/draw_utils";
 import "./Options.css";
 
 const Options = () => {
