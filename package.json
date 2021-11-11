@@ -1,5 +1,5 @@
 {
-  "name": "chrome-extension-boilerplate-react",
+  "name": "posture-ext",
   "version": "4.2.0",
   "description": "A chrome extension boilerplate built with React 17, Webpack 5, and Webpack Dev Server 4",
   "license": "MIT",
@@ -14,9 +14,12 @@
   },
   "dependencies": {
     "@hot-loader/react-dom": "^17.0.1",
+    "@tensorflow-models/pose-detection": "^0.0.6",
+    "@tensorflow/tfjs-backend-webgl": "^3.11.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-hot-loader": "^4.13.0"
+    "react-hot-loader": "^4.13.0",
+    "react-webcam": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

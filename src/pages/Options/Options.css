@@ -1,8 +1,113 @@
-.OptionsContainer {
-  width: 100%;
-  height: 50vh;
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+body {
+    background-color: thistle;
+    
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+.container {
+    display: flex;
+    gap: 3ch;
+    max-width: 960px;
+    padding: 0 4ch;
+}
+.camera-container {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    padding: 8px;
+    background-color: #ffff;
+    outline: 1px solid #303030;
+    box-shadow: 0.9ch 0.9ch rgba(0, 0, 0, 0.8);
+}
+.camera-container video {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    transform: scale(2.5);
+    border-radius: 50%;
+    padding: 8px;
+    background-color: #ffff; 
+    z-index: 1;   
+
+}
+.camera-container canvas {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    transform: scale(2.5);
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 8px;
+    z-index: 1;
+    /* background-color: #ffff;     */
+
+}
+.card {
+    padding: 16px;
+    grid-template-rows: 1fr auto;
+    background-color: #fff;
+    outline: 1px solid #303030;
+    margin: 0 4px .4em;
+    box-shadow: 0.9ch 0.9ch rgba(0, 0, 0, 0.8);
+}
+.button-container {
+    display: flex;
+}
+.button-container div{
+    margin-top: 1rem;
+    margin-right: 1rem;
+}
+p {
+    margin-top: 1rem;
+}
+.button-container button {
+    border: 1px solid #303030;
+    background-color: sandybrown;
+    padding: 6px 11px;
+    box-shadow: 0.5ch 0.5ch rgba(0, 0, 0, 0.8);
+    transform: translate(-1px, -1px);
+    transition: all .05s ease-in;
+}
+.button-container button:hover {
+    background-color: whitesmoke;
+    cursor: pointer;
+}
+.button-container button:active {
+    transform: translate(0, 0);
+    box-shadow: 0.2ch 0.2ch rgba(0, 0, 0, 0.8);
 }

@@ -1,0 +1,60 @@
+.good-posture > *:not(#kr-posture-app-content) {
+    filter: blur(0px);
+    transition: ease-out 0.3s;
+}
+.bad-posture > *:not(#kr-posture-app-content) {
+    filter: blur(4px);
+    transition: ease-in 0.6s;
+}
+.kr-posture-app-content {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+.posture-status-bar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    left: 20px;
+    /* width: 100%; */
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+    height: 60px;
+
+    transform: translateY(-100px);
+    font-weight: bold;
+    font-size: 18px;
+    color: #444;
+    text-align: center;
+    overflow: hidden;
+    z-index: 999999;
+    transition: all .3s ease-out;
+    user-select: none;
+    background-color: #ffff;
+    outline: 1px solid #303030;
+    box-shadow: 0.9ch 0.9ch rgba(0, 0, 0,  0.8);
+}
+
+.posture-status-bar.full {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;    
+    padding: 6px;
+}
+ .posture-status-bar:hover {
+    cursor: grab;
+}
+.good-posture .posture-status-bar {
+    background-color: thistle;
+    transform: translateY(0);
+    display: none;
+}
+.bad-posture .posture-status-bar {
+    background-color: orange;
+    transform: translateY(0);
+}
