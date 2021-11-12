@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import PostureStatus from "./modules/PostureStatus.component";
-
 
 const BAD_POSTURE = "bad";
 const GOOD_POSTURE = "good";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import * as poseDetection from "@tensorflow-models/pose-detection";
 // import * as tf from "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-webgl";
@@ -26,55 +26,10 @@ const Options = () => {
   // this is the boolean that starts / stops the pose detection
   const [isWatching, setIsWatching] = useState(false);
 
-  // pass the message to the content script
-  function handlePosture(msg: { baseline?: any; posture?: any; }) {
-    // console.log(msg);
-    if (msg.baseline) GOOD_POSTURE_POSITION.current = msg.baseline;
-    if (msg.posture) contentPort && contentPort.postMessage(msg);
-  }
+  // handle the selection of the webcam
+  const [deviceId, setDeviceId] = useState("");
+  const [devices, setDevices] = useState([]);
 
-  /**
-   * Determines position of eye and checks against baseline posture
-   * 
-   * @param {(obj[])} Array of objects
-   * @returns void
-   * @memberof Options
-   */
-  const handlePose = async (poses: { keypoints: { y: number; }[]; }[]) => {
-
-    try {
-
-      let rightEyePosition = poses[0].keypoints[2].y;
-      currentPosturePosition.current = rightEyePosition
-      // console.log({ rightEyePosition });
-      if (!rightEyePosition) return;
-      if (GOOD_POSTURE_POSITION.current == null) {
-        handlePosture({ baseline: currentPosturePosition.current });
-        console.log("Good Posture Height is set at ", currentPosturePosition.current);
-      }
-
-      // console.log(`
-      // baseline: ${Math.floor(GOOD_POSTURE_POSITION)}\n
-      // currentPos: ${Math.floor(currentPosturePosition.current)}`);
-
-      // handle the logic for off-posture position
-      if (
-        Math.abs(
-          currentPosturePosition.current -
-          GOOD_POSTURE_POSITION.current) > GOOD_POSTURE_DEVIATION) {
-        handlePosture({ posture: "bad" });
-      }
-
-      if (
-        Math.abs(
-          currentPosturePosition.current -
-          GOOD_POSTURE_POSITION.current) < GOOD_POSTURE_DEVIATION) {
-        handlePosture({ posture: "good" });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   /**
    * Starts the pose detection by loading the model and kicking off the detection loop
@@ -133,6 +88,52 @@ const Options = () => {
     }
   };
 
+
+  /**
+   * Determines position of eye and checks against baseline posture
+   * 
+   * @param {(obj[])} Array of objects
+   * @returns void
+   * @memberof Options
+   */
+  const handlePose = async (poses: { keypoints: { y: number; }[]; }[]) => {
+
+    try {
+
+      let rightEyePosition = poses[0].keypoints[2].y;
+      currentPosturePosition.current = rightEyePosition
+      // console.log({ rightEyePosition });
+      if (!rightEyePosition) return;
+      if (GOOD_POSTURE_POSITION.current == null) {
+        handlePosture({ baseline: currentPosturePosition.current });
+        console.log("Good Posture Height is set at ", currentPosturePosition.current);
+      }
+
+      // console.log(`
+      // baseline: ${Math.floor(GOOD_POSTURE_POSITION)}\n
+      // currentPos: ${Math.floor(currentPosturePosition.current)}`);
+
+      // handle the logic for off-posture position
+      if (
+        Math.abs(
+          currentPosturePosition.current -
+          GOOD_POSTURE_POSITION.current) > GOOD_POSTURE_DEVIATION) {
+        handlePosture({ posture: "bad" });
+      }
+
+      if (
+        Math.abs(
+          currentPosturePosition.current -
+          GOOD_POSTURE_POSITION.current) < GOOD_POSTURE_DEVIATION) {
+        handlePosture({ posture: "good" });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
   /**
    * Draws the keypoints and skeleton on the canvas
    *
@@ -158,6 +159,50 @@ const Options = () => {
       drawGoodPostureHeight(poses[0].keypoints, ctx, GOOD_POSTURE_POSITION.current);
     }
   };
+
+  // pass the message to the content script
+  function handlePosture(msg: { baseline?: any; posture?: any; }) {
+    // console.log(msg);
+    if (msg.baseline) GOOD_POSTURE_POSITION.current = msg.baseline;
+    if (msg.posture) contentPort && contentPort.postMessage(msg);
+  }
+
+  // event handlers for the two buttons on the options page
+  const handleToggleCamera = () => setIsWatching(isCurrentlyWatching => !isCurrentlyWatching);
+  const handleResetPosture = () => {
+    GOOD_POSTURE_POSITION.current = null;
+  };
+
+  //  webcam devices
+  interface IDevice {
+    deviceId: string;
+    label: string;
+  }
+  // handle media devices loaded
+  const handleDevices = useCallback(
+    mediaDevices => {
+      interface IMediaDevice {
+        deviceId: string | null;
+        groupId: string | null;
+        kind: string | null;
+        label: string | null;
+      }
+
+      const cameras = mediaDevices.filter((device: { kind: string; }) => device.kind === 'videoinput');
+
+      setDevices(cameras)
+      setDeviceId(cameras[0].deviceId);
+
+    },
+    [setDevices]
+  );
+
+  function handleSetDeviceId(e: any) {
+    setIsWatching(isWatching => !isWatching);
+    setDeviceId(e.target.value);
+    setIsWatching(isWatching => !isWatching);
+
+  }
 
   // connect and reconnect to ports when watching is toggled
   useEffect(() => {
@@ -198,21 +243,22 @@ const Options = () => {
     loadMoveNet();
   }, []);
 
-  // event handlers for the two buttons on the options page
-  const handleToggleCamera = () => setIsWatching(isCurrentlyWatching => !isCurrentlyWatching);
-  const handleResetPosture = () => {
-    GOOD_POSTURE_POSITION.current = null;
-  };
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then(handleDevices);
+  }, [handleDevices]);
+
+
 
   return (
     <>
       <div className="App">
         <div className="container">
+
           <div className="camera-container">
             {!isWatching && "Start Camera"}
             {isWatching &&
               <>
-                <Webcam ref={camRef} />
+                <Webcam audio={false} ref={camRef} videoConstraints={{ deviceId: deviceId }} />
                 <canvas ref={canvasRef} />
               </>
             }
@@ -232,6 +278,22 @@ const Options = () => {
                   <p>Reset the "Good Posture" position</p>
                 </div>
               }
+            </div>
+            <div className="select-container">
+              <select
+                onChange={handleSetDeviceId}
+                value={deviceId}
+                style={{
+                  alignSelf: 'center'
+                }}>
+                {devices.map((device: IDevice, key) => (
+                  <option value={device.deviceId} key={key} >
+                    {device.label || `Device ${key + 1}`}
+                  </option>
+
+                ))}
+              </select>
+
             </div>
           </div>
         </div>

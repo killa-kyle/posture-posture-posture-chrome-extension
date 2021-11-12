@@ -37,6 +37,11 @@ body {
     max-width: 960px;
     padding: 0 4ch;
 }
+.select-container {
+    width: auto;
+    margin-top: 12px;
+    overflow: hidden;
+}
 .camera-container {
     position: relative;
     overflow: hidden;
@@ -44,6 +49,7 @@ body {
     align-items: center;
     justify-content: center;
     min-width: 200px;
+    width: 200px;
     height: 200px;
     border-radius: 50%;
     padding: 8px;
