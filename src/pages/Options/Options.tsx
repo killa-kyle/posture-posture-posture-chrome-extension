@@ -222,19 +222,18 @@ const Options = () => {
         });
       }
       if (port.name === "set-options") {
-        // send 'isWatching' to popup script
+        // send 'isWatching' and the panel status to popup script
         port.postMessage({ action: "SET_IS_WATCHING", payload: { isWatching } });
         port.postMessage({ action: "SET_IS_PANEL_OPEN", payload: { isPanelOpen: IS_PANEL_OPEN } });
 
+        // handle options sent from the popup script
         port.onMessage.addListener(async function (msg) {
           if (msg.action === "RESET_POSTURE") {
             GOOD_POSTURE_POSITION.current = null;
             console.log("posture baseline reset");
           }
           if (msg.action === "TOGGLE_WATCHING") {
-
             setIsWatching(msg.payload.isWatching);
-
           }
         });
         port.onDisconnect.addListener(event => {

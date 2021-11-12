@@ -54,7 +54,7 @@ const Popup = () => {
       backgroundColor: 'thistle',
       padding: '10px',
     }}>
-      <h1>Posture</h1>
+      <h1>Posture!Posture!Posture!</h1>
       {!isWatching && !isPanelOpen && <button 
         style={{
           backgroundColor: 'sandybrown',
