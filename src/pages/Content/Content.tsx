@@ -18,6 +18,8 @@ const Content = () => {
       });
       port.onDisconnect.addListener(function () {
         // console.log(port);
+        document.body.classList.add("good-posture");
+        document.body.classList.remove("bad-posture");
       });
     } catch (error) {
       console.error({ message: `port couldn't connect `, error });

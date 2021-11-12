@@ -25,10 +25,13 @@ const Options = () => {
 
   // this is the boolean that starts / stops the pose detection
   const [isWatching, setIsWatching] = useState(false);
+  const IS_PANEL_OPEN = true;
 
   // handle the selection of the webcam
   const [deviceId, setDeviceId] = useState("");
   const [devices, setDevices] = useState([]);
+
+
 
 
   /**
@@ -197,10 +200,11 @@ const Options = () => {
     [setDevices]
   );
 
-  function handleSetDeviceId(e: any) {
-    setIsWatching(isWatching => !isWatching);
-    setDeviceId(e.target.value);
-    setIsWatching(isWatching => !isWatching);
+  // smoothly switch between the cameras
+  async function handleSetDeviceId(e: any) {
+    await setDeviceId(e.target.value);
+    await setIsWatching(false);
+    await setIsWatching(isWatching => !isWatching);
 
   }
 
@@ -220,6 +224,8 @@ const Options = () => {
       if (port.name === "set-options") {
         // send 'isWatching' to popup script
         port.postMessage({ action: "SET_IS_WATCHING", payload: { isWatching } });
+        port.postMessage({ action: "SET_IS_PANEL_OPEN", payload: { isPanelOpen: IS_PANEL_OPEN } });
+
         port.onMessage.addListener(async function (msg) {
           if (msg.action === "RESET_POSTURE") {
             GOOD_POSTURE_POSITION.current = null;
@@ -264,7 +270,7 @@ const Options = () => {
             }
           </div>
           <div className="card options-container">
-            <h1>Keep this tab open in a second window to capture your posture correctly!</h1>
+            <h1>Posture!Posture!Posture!</h1>
             <div className="button-container">
               <div>
                 <button onClick={handleToggleCamera}>
