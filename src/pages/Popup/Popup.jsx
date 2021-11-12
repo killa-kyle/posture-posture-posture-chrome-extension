@@ -46,8 +46,11 @@ const Popup = () => {
     }
   }
   async function openVideoPopup(){
-    chrome.windows.create({ url: "options.html", type: "popup", height: 330, width:970 })
+    chrome.windows.create({ url: "options.html", type: "popup", height: 280, width:700 })
     await setIsPanelOpen(true);
+    // TODO: handle reconnect from popup after options panel opens 
+    // faking it for now by forcing reload of page
+    setTimeout(() => window.location.reload(), 600);
   }
   return (
     <div style={{
@@ -80,7 +83,7 @@ const Popup = () => {
         onClick={()=> resetPosture()}>Reset Position</button>}
        <button 
         style={{
-          backgroundColor: 'sandybrown',
+          backgroundColor: isWatching ? 'tomato' : '#8bc34a',
           border: '1px solid #303030',
           margin: '10px',
           padding: '6px 11px',

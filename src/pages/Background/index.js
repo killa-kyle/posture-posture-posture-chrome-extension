@@ -13,11 +13,8 @@ class Main {
   }
 
   init = () => {
-
-    console.log('init background');
     // chrome.windows.create({ url: "options.html", type: "popup", height: 330, width:970 });
     // chrome.windows.create({ url: "option.html", height: 320, width:1200 });
-
   }
 
 

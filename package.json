@@ -1,7 +1,7 @@
 {
   "name": "posture-ext",
   "version": "4.2.0",
-  "description": "A chrome extension boilerplate built with React 17, Webpack 5, and Webpack Dev Server 4",
+  "description": "A chrome extension built with React 17, Webpack 5, and Webpack Dev Server 4",
   "license": "MIT",
   "repository": {
     "type": "git",
