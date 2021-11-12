@@ -18,7 +18,7 @@
   "content_scripts": [
     {
       "run_at": "document_end",
-      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
       
