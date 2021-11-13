@@ -3,7 +3,11 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 // import * as tf from "@tensorflow/tfjs-core";
 import '@tensorflow/tfjs-backend-webgl';
 import Webcam from 'react-webcam';
-import { drawKeypoints, drawSkeleton, drawGoodPostureHeight } from './modules/draw_utils';
+import {
+  drawKeypoints,
+  drawSkeleton,
+  drawGoodPostureHeight,
+} from './modules/draw_utils';
 import './Options.css';
 
 const Options = () => {
@@ -18,8 +22,6 @@ const Options = () => {
 
   // the current moveNet model object
   let detector: any | null = null;
-  // this object holds the port when connected
-  let contentPort = useRef<any>(null);
 
   // set up our camera and canvas refs to use later
   const camRef = useRef<any>(null);
@@ -182,16 +184,14 @@ const Options = () => {
     if (msg.baseline) GOOD_POSTURE_POSITION.current = msg.baseline;
     if (msg.posture) {
       // contentPort.current && contentPort.current.postMessage(msg);
-      var receiver;
-      for (var channel in connections.current) {
+      let receiver;
+      for (let channel in connections.current) {
         receiver = connections.current[channel];
+        if (!receiver.name.includes('watch-posture')) return;
 
-        if (!receiver.name.includes('watch-posture')) return
         receiver.postMessage(msg);
-
       }
     }
-
   }
 
   // event handlers for the two buttons on the options page
@@ -236,53 +236,52 @@ const Options = () => {
 
   // connect and reconnect to ports when watching is toggled
   useEffect(() => {
-    // connect to the common port
+    // connect to port for messaging to content script
     chrome.runtime.onConnect.addListener(function (port) {
-      connections.current[port.name] = port;
-      console.log('connected', connections.current)
+      // console.log('connected', connections.current)
       if (port.name.includes('watch-posture')) {
         // contentPort.current = port;
-
-
-
-
+        connections.current[port.name] = port;
 
         port.onDisconnect.addListener((event) => {
           // contentPort.current = null;
-          connections.current = Object.fromEntries(Object.entries(connections.current).filter(([key]) => key !== port.name));
 
-          console.log('disconnected', connections.current)
+          // remove the port from the connections obejct
+          connections.current = Object.fromEntries(
+            Object.entries(connections.current).filter(
+              ([key]) => key !== port.name
+            )
+          );
+        });
+      }
+
+      if (port.name === 'set-options') {
+        // send 'isWatching' and the panel status to popup script
+        port.postMessage({
+          action: 'SET_IS_WATCHING',
+          payload: { isWatching },
+        });
+        port.postMessage({
+          action: 'SET_IS_PANEL_OPEN',
+          payload: { isPanelOpen: IS_PANEL_OPEN },
         });
 
+        // handle options sent from the popup script
+        port.onMessage.addListener(async function (msg) {
 
-
+          if (msg.action === 'RESET_POSTURE') {
+            GOOD_POSTURE_POSITION.current = null;
+            // console.log('posture baseline reset');
+          }
+          if (msg.action === 'TOGGLE_WATCHING') {
+            if (msg.payload.isWatching === null) return;
+            setIsWatching(msg.payload.isWatching);
+          }
+        });
+        port.onDisconnect.addListener((event) => {
+          // console.log("port disconnected", event)
+        });
       }
-      // if (port.name === 'set-options') {
-      //   // send 'isWatching' and the panel status to popup script
-      //   port.postMessage({
-      //     action: 'SET_IS_WATCHING',
-      //     payload: { isWatching },
-      //   });
-      //   port.postMessage({
-      //     action: 'SET_IS_PANEL_OPEN',
-      //     payload: { isPanelOpen: IS_PANEL_OPEN },
-      //   });
-
-      //   // handle options sent from the popup script
-      //   port.onMessage.addListener(async function (msg) {
-      //     if (msg.action === 'RESET_POSTURE') {
-      //       GOOD_POSTURE_POSITION.current = null;
-      //       // console.log('posture baseline reset');
-      //     }
-      //     if (msg.action === 'TOGGLE_WATCHING') {
-      //       if (!msg.payload.isWatching) return
-      //       setIsWatching(msg.payload.isWatching);
-      //     }
-      //   });
-      //   port.onDisconnect.addListener((event) => {
-      //     // console.log("port disconnected", event)
-      //   });
-      // }
     });
   }, [isWatching]);
 
@@ -318,7 +317,8 @@ const Options = () => {
               <div>
                 <button
                   className={`${isWatching ? 'btn-stop' : 'btn-start'}`}
-                  onClick={handleToggleCamera}>
+                  onClick={handleToggleCamera}
+                >
                   {!isWatching ? 'Start' : 'Stop'}
                 </button>
                 <p>Toggle the posture tracking</p>

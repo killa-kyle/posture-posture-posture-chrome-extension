@@ -27,7 +27,7 @@ const Popup = () => {
     }
 
     return () => {
-      port.current.disconnect();
+      // port.current.disconnect();
       port.current = null;
     }
   }, [isPanelOpen]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 const BAD_POSTURE = "bad";
 const GOOD_POSTURE = "good";
-const PORT_NAME = `watch-posture-${Math.floor(Math.random() * 1000)}`;
+const PORT_NAME = `watch-posture-${Math.floor(Math.random() * 1000000)}`;
 
 const Content = () => {
   const [currentPosture, setCurrentPosture] = useState<String | null>(null);
