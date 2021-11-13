@@ -7,6 +7,7 @@ import {
   drawKeypoints,
   drawSkeleton,
   drawGoodPostureHeight,
+  drawCanvas
 } from './modules/draw_utils';
 import './Options.css';
 
@@ -95,7 +96,7 @@ const Options = () => {
         return;
 
       handlePose(poses);
-      drawCanvas(poses, video, videoWidth, videoHeight, canvasRef);
+      drawCanvas(poses, video, videoWidth, videoHeight, canvasRef, GOOD_POSTURE_POSITION.current);
     }
   };
 
@@ -120,10 +121,6 @@ const Options = () => {
         );
       }
 
-      // console.log(`
-      // baseline: ${Math.floor(GOOD_POSTURE_POSITION)}\n
-      // currentPos: ${Math.floor(currentPosturePosition.current)}`);
-
       // handle the logic for off-posture position
       if (
         Math.abs(
@@ -145,40 +142,7 @@ const Options = () => {
     }
   };
 
-  /**
-   * Draws the keypoints and skeleton on the canvas
-   *
-   * @param {(obj[])} Array of objects
-   * @param {(obj)} video object
-   * @param {(int)} video width
-   * @param {(int)} video height
-   * @param {(obj)} canvas object
-   * @returns void
-   * @memberof Options
-   */
-  const drawCanvas = (
-    poses: { keypoints: any }[],
-    video: any,
-    videoWidth: any,
-    videoHeight: any,
-    canvas: any
-  ) => {
-    if (canvas.current == null) return;
-    const ctx = canvas.current.getContext('2d');
 
-    canvas.current.width = videoWidth;
-    canvas.current.height = videoHeight;
-
-    if (poses[0].keypoints != null) {
-      // drawKeypoints(poses[0].keypoints, ctx);
-      // drawSkeleton(poses[0].keypoints, poses[0].id, ctx);
-      drawGoodPostureHeight(
-        poses[0].keypoints,
-        ctx,
-        GOOD_POSTURE_POSITION.current
-      );
-    }
-  };
 
   // pass the message to the content script
   function handlePosture(msg: { baseline?: any; posture?: any }) {
