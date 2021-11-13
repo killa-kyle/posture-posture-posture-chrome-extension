@@ -123,6 +123,7 @@ export function drawGoodPostureHeight(keypoints: any, ctx: any, currentGoodPostu
   const currentPostureHeight = keypoints[2].y;
   const delta = currentPostureHeight - currentGoodPostureHeight
 
+
   // show current good posture baseline
   ctx.strokeStyle = "#fff";
   ctx.lineWidth = 1;
@@ -147,5 +148,5 @@ export function drawGoodPostureHeight(keypoints: any, ctx: any, currentGoodPostu
     ctx.fillStyle = "rgba(255, 0, 0, 0.5)"; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
   }
 
-  // ctx.fillRect(0, currentGoodPostureHeight, 800, delta);
+  ctx.fillRect(0, currentGoodPostureHeight, 800, delta);
 }

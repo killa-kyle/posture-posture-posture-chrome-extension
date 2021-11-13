@@ -154,8 +154,12 @@ const Options = () => {
   }
 
   // event handlers for the two buttons on the options page
-  const handleToggleCamera = () =>
-    setIsWatching((isCurrentlyWatching) => !isCurrentlyWatching);
+  const handleToggleCamera = () => {
+    setIsWatching((isCurrentlyWatching) => {
+      document.title = !isCurrentlyWatching ? "TRACKING POSTURE - Posture!Posture!Posture!" : "Posture!Posture!Posture! - Options";
+      return !isCurrentlyWatching
+    });
+  };
   const handleResetPosture = () => {
     GOOD_POSTURE_POSITION.current = null;
   };
