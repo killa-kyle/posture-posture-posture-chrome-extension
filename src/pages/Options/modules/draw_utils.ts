@@ -1,6 +1,5 @@
 // https://github.com/tensorflow/tfjs-models/blob/9b5d3b663638752b692080145cfb123fa324ff11/pose-detection/demos/live_video/src/camera.js
-import * as poseDetection from "@tensorflow-models/pose-detection";
-
+import * as poseDetection from '@tensorflow-models/pose-detection';
 
 /**
  * Draws the keypoints and skeleton on the canvas
@@ -38,22 +37,25 @@ export const drawCanvas = (
  * Draw the keypoints on the video.
  * @param keypoints A list of keypoints.
  */
-export function drawKeypoints(keypoints: any, ctx: any, currentGoodPostureHeight: any) {
+export function drawKeypoints(
+  keypoints: any,
+  ctx: any,
+  currentGoodPostureHeight: any
+) {
   const currentPostureHeight = keypoints[2].y;
-  const delta = currentPostureHeight - currentGoodPostureHeight
+  const delta = currentPostureHeight - currentGoodPostureHeight;
 
   const keypointInd = poseDetection.util.getKeypointIndexBySide(
     poseDetection.SupportedModels.MoveNet
   );
-  ctx.fillStyle = "Red";
-  ctx.strokeStyle = "White";
+  ctx.fillStyle = 'Red';
+  ctx.strokeStyle = 'White';
   ctx.lineWidth = 1;
 
-  ctx.fillStyle = "rgba(0, 255, 0, 0.9)"; // green if delta is positive
+  ctx.fillStyle = 'rgba(0, 255, 0, 0.9)'; // green if delta is positive
   if (delta > 25 || delta < -25) {
-    ctx.fillStyle = "rgba(255, 0, 0, 0.9)"; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.9)'; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
   }
-
 
   for (const i of keypointInd.middle) {
     drawKeypoint(keypoints[i], ctx);
@@ -90,27 +92,29 @@ function drawKeypoint(keypoint: any, ctx: any) {
  */
 export function drawSkeleton(keypoints: any, poseId: any, ctx: any) {
   // Each poseId is mapped to a color in the color palette.
-  const color = "White";
+  const color = 'White';
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
   ctx.lineWidth = 4;
 
-  poseDetection.util.getAdjacentPairs(poseDetection.SupportedModels.MoveNet).forEach(([i, j]) => {
-    const kp1 = keypoints[i];
-    const kp2 = keypoints[j];
+  poseDetection.util
+    .getAdjacentPairs(poseDetection.SupportedModels.MoveNet)
+    .forEach(([i, j]) => {
+      const kp1 = keypoints[i];
+      const kp2 = keypoints[j];
 
-    // If score is null, just show the keypoint.
-    const score1 = kp1.score != null ? kp1.score : 1;
-    const score2 = kp2.score != null ? kp2.score : 1;
-    const scoreThreshold = 0.3 || 0;
+      // If score is null, just show the keypoint.
+      const score1 = kp1.score != null ? kp1.score : 1;
+      const score2 = kp2.score != null ? kp2.score : 1;
+      const scoreThreshold = 0.3 || 0;
 
-    if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
-      ctx.beginPath();
-      ctx.moveTo(kp1.x, kp1.y);
-      ctx.lineTo(kp2.x, kp2.y);
-      ctx.stroke();
-    }
-  });
+      if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
+        ctx.beginPath();
+        ctx.moveTo(kp1.x, kp1.y);
+        ctx.lineTo(kp2.x, kp2.y);
+        ctx.stroke();
+      }
+    });
 }
 
 /**
@@ -119,13 +123,16 @@ export function drawSkeleton(keypoints: any, poseId: any, ctx: any) {
  * @param ctx current context of the canvas.
  * @param currentGoodPostureHeight current context of the canvas.
  */
-export function drawGoodPostureHeight(keypoints: any, ctx: any, currentGoodPostureHeight: number) {
+export function drawGoodPostureHeight(
+  keypoints: any,
+  ctx: any,
+  currentGoodPostureHeight: number
+) {
   const currentPostureHeight = keypoints[2].y;
-  const delta = currentPostureHeight - currentGoodPostureHeight
-
+  const delta = currentPostureHeight - currentGoodPostureHeight;
 
   // show current good posture baseline
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = '#fff';
   ctx.lineWidth = 1;
 
   ctx.beginPath();
@@ -143,9 +150,9 @@ export function drawGoodPostureHeight(keypoints: any, ctx: any, currentGoodPostu
   ctx.stroke(); // Render the path
 
   // draw difference between current posture height and good posture height
-  ctx.fillStyle = "rgba(0, 255, 0, 0.5)"; // green if delta is positive
+  ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'; // green if delta is positive
   if (delta > 25 || delta < -25) {
-    ctx.fillStyle = "rgba(255, 0, 0, 0.5)"; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
   }
 
   ctx.fillRect(0, currentGoodPostureHeight, 800, delta);

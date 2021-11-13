@@ -1,4 +1,3 @@
-
 /**
  * Chrome storage abstraction class
  *
@@ -35,9 +34,9 @@ class Db {
   get(...params) {
     return new Promise((resolve, reject) => {
       try {
-        chrome.storage.local.get(params, items => {
+        chrome.storage.local.get(params, (items) => {
           if (items === undefined) {
-            reject(new Error("Error"));
+            reject(new Error('Error'));
           } else {
             resolve(items);
           }
@@ -57,9 +56,9 @@ class Db {
   getAll = () => {
     return new Promise((resolve, reject) => {
       try {
-        chrome.storage.local.get(null, items => {
+        chrome.storage.local.get(null, (items) => {
           if (items === undefined) {
-            reject(new Error("Error"));
+            reject(new Error('Error'));
           } else {
             resolve(items);
           }
@@ -80,7 +79,7 @@ class Db {
   remove(keyStr) {
     return new Promise((resolve, reject) => {
       try {
-        chrome.storage.local.remove(keyStr, res => {
+        chrome.storage.local.remove(keyStr, (res) => {
           resolve(keyStr);
         });
       } catch (e) {

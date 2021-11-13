@@ -5,8 +5,6 @@
  * @class ChromeApi
  */
 class ChromeApi {
-  
-
   /**
    * Get tab info based on it's tab id
    *
@@ -14,9 +12,9 @@ class ChromeApi {
    * @param {Number} tab id
    * @memberof ChromeApi
    */
-  getTabInfo = tabId => {
-    return new Promise(resolve => {
-      chrome.tabs.get(tabId, tab => {
+  getTabInfo = (tabId) => {
+    return new Promise((resolve) => {
+      chrome.tabs.get(tabId, (tab) => {
         resolve(tab);
       });
     });
@@ -24,7 +22,7 @@ class ChromeApi {
 
   sendMessageFromContentScript = (infoObj, callback) => {
     const objString = JSON.stringify(infoObj);
-    chrome.runtime.sendMessage(objString, response => {
+    chrome.runtime.sendMessage(objString, (response) => {
       callback(response);
     });
   };
@@ -36,7 +34,7 @@ class ChromeApi {
    *@param {string} url
    *@memberof ChromeApi
    */
-  removeFromHistory = url => {
+  removeFromHistory = (url) => {
     chrome.history.deleteUrl({ url: url });
   };
 
@@ -48,7 +46,7 @@ class ChromeApi {
    */
   createIncognitoWindow = () => {
     return new Promise((resolve, reject) => {
-      chrome.windows.create({ focused: true, incognito: true }, win => {
+      chrome.windows.create({ focused: true, incognito: true }, (win) => {
         resolve(win);
       });
     });
@@ -61,9 +59,9 @@ class ChromeApi {
    *@param {Number} window id
    * @memberof ChromeApi
    */
-  getWindow = winId => {
+  getWindow = (winId) => {
     return new Promise((resolve, reject) => {
-      chrome.windows.get(winId, info => {
+      chrome.windows.get(winId, (info) => {
         resolve(info);
       });
     });
@@ -76,7 +74,7 @@ class ChromeApi {
    *@param {Number} window id
    * @memberof ChromeApi
    */
-  onIncognitoWindowClosed = winId => {
+  onIncognitoWindowClosed = (winId) => {
     if (this.win) {
       if (this.win.id === winId) this.win = false;
     }
@@ -90,7 +88,7 @@ class ChromeApi {
    * @param {string} obj.url url for the tab
    * @memberof ChromeApi
    */
-  createIncognitoTab = async obj => {
+  createIncognitoTab = async (obj) => {
     if (!this.win) {
       this.win = await this.createIncognitoWindow();
       const tab = await this.getActiveTab(this.win.id);
@@ -100,7 +98,7 @@ class ChromeApi {
         ...obj,
         selected: true,
         active: true,
-        windowId: this.win.id
+        windowId: this.win.id,
       });
     }
     chrome.windows.update(this.win.id, { focused: true });
@@ -114,35 +112,35 @@ class ChromeApi {
    *@param {Number}
    * @memberof ChromeApi
    */
-  getActiveTab = winId => {
+  getActiveTab = (winId) => {
     const config = { active: true };
     if (winId) {
       config.windowId = winId;
     }
     return new Promise((resolve, reject) => {
-      chrome.tabs.query(config, tabs => {
+      chrome.tabs.query(config, (tabs) => {
         resolve(tabs[0]);
       });
     });
   };
 
-  sendMessageToActiveTab = async payload => {
-    console.log("sendMessageToActiveTab called", payload);
+  sendMessageToActiveTab = async (payload) => {
+    console.log('sendMessageToActiveTab called', payload);
     const tab = await this.getActiveTab();
     console.log({ tab });
     chrome.tabs.sendMessage(tab.id, payload);
     return true;
   };
 
-  traverseTabs = callback => {
-    chrome.tabs.query({}, tabs => {
+  traverseTabs = (callback) => {
+    chrome.tabs.query({}, (tabs) => {
       callback(tabs);
     });
   };
 
   shiftToLeftTab = () => {
-    this.traverseTabs(tabs => {
-      console.log(tabs, tabs.length, "tabs info");
+    this.traverseTabs((tabs) => {
+      console.log(tabs, tabs.length, 'tabs info');
       let activeTabIndex = -1;
       for (let i = 0; i < tabs.length; i++) {
         if (tabs[i].active) {
@@ -160,7 +158,7 @@ class ChromeApi {
   };
 
   shiftToRightTab = () => {
-    this.traverseTabs(tabs => {
+    this.traverseTabs((tabs) => {
       let activeTabIndex = -1;
       for (let i = 0; i < tabs.length; i++) {
         if (tabs[i].active) {
@@ -177,8 +175,8 @@ class ChromeApi {
     });
   };
 
-  closeActiveTab = callback => {
-    chrome.tabs.query({ active: true }, tabs => {
+  closeActiveTab = (callback) => {
+    chrome.tabs.query({ active: true }, (tabs) => {
       console.log({ tabs });
       var url = tabs[0].url;
       const tabId = tabs[0].id;
@@ -202,12 +200,12 @@ class ChromeApi {
    * @method
    * @memberof ChromeApi
    */
-  openOptionsPage = (url = "") => {
-    const optionsURL = chrome.runtime.getURL("options.html") + `?url=${url}`;
+  openOptionsPage = (url = '') => {
+    const optionsURL = chrome.runtime.getURL('options.html') + `?url=${url}`;
     chrome.tabs.create({ url: optionsURL }, () => {});
   };
 
-  createContextMenu = opts => {
+  createContextMenu = (opts) => {
     return chrome.contextMenus.create(opts);
   };
 }

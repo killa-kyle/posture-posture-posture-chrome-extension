@@ -7,7 +7,7 @@ import {
   drawKeypoints,
   drawSkeleton,
   drawGoodPostureHeight,
-  drawCanvas
+  drawCanvas,
 } from './modules/draw_utils';
 import './Options.css';
 
@@ -16,7 +16,6 @@ const Options = () => {
   let GOOD_POSTURE_POSITION = useRef<any>(null);
 
   let currentPosturePosition = useRef<any>(null);
-
 
   let GOOD_POSTURE_DEVIATION = useRef(25);
   const DETECTION_RATE = 100; // rate at which the pose detection is performed in ms
@@ -96,7 +95,14 @@ const Options = () => {
         return;
 
       handlePose(poses);
-      drawCanvas(poses, video, videoWidth, videoHeight, canvasRef, GOOD_POSTURE_POSITION.current);
+      drawCanvas(
+        poses,
+        video,
+        videoWidth,
+        videoHeight,
+        canvasRef,
+        GOOD_POSTURE_POSITION.current
+      );
     }
   };
 
@@ -142,8 +148,6 @@ const Options = () => {
     }
   };
 
-
-
   // pass the message to the content script
   function handlePosture(msg: { baseline?: any; posture?: any }) {
     // console.log(msg);
@@ -156,8 +160,10 @@ const Options = () => {
   // event handlers for the two buttons on the options page
   const handleToggleCamera = () => {
     setIsWatching((isCurrentlyWatching) => {
-      document.title = !isCurrentlyWatching ? "TRACKING POSTURE - Posture!Posture!Posture!" : "Posture!Posture!Posture! - Options";
-      return !isCurrentlyWatching
+      document.title = !isCurrentlyWatching
+        ? 'TRACKING POSTURE - Posture!Posture!Posture!'
+        : 'Posture!Posture!Posture! - Options';
+      return !isCurrentlyWatching;
     });
   };
   const handleResetPosture = () => {
@@ -201,7 +207,6 @@ const Options = () => {
   useEffect(() => {
     // connect to port for messaging to content script
     chrome.runtime.onConnect.addListener(function (port) {
-
       if (port.name === 'set-options') {
         // send 'isWatching' and the panel status to popup script
         port.postMessage({
@@ -215,7 +220,6 @@ const Options = () => {
 
         // handle options sent from the popup script
         port.onMessage.addListener(async function (msg) {
-
           if (msg.action === 'SET_GOOD_POSTURE_DEVIATION') {
             if (!msg.payload.GOOD_POSTURE_DEVIATION) return;
             GOOD_POSTURE_DEVIATION.current = msg.payload.GOOD_POSTURE_DEVIATION;
@@ -241,8 +245,8 @@ const Options = () => {
   useEffect(() => {
     loadMoveNet();
 
-    // connect to the background script 
-    portRef.current = chrome.runtime.connect({ name: "relay-detection" });
+    // connect to the background script
+    portRef.current = chrome.runtime.connect({ name: 'relay-detection' });
   }, []);
 
   useEffect(() => {

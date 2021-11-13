@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef} from "react";
-import "./Popup.css";
+import React, { useState, useEffect, useRef } from 'react';
+import './Popup.css';
 const Popup = () => {
   const [status, setStatus] = useState('');
   const [isWatching, setIsWatching] = useState(false);
@@ -10,18 +10,17 @@ const Popup = () => {
 
   useEffect(() => {
     try {
+      port.current = chrome.runtime.connect({ name: 'set-options' });
 
-      port.current = chrome.runtime.connect({ name: "set-options" });
-
-      port.current.onMessage.addListener(function(msg) {
-        if (msg.action === 'SET_IS_WATCHING') setIsWatching(msg.payload.isWatching);
-        if (msg.action === 'SET_IS_PANEL_OPEN') setIsPanelOpen(msg.payload.isPanelOpen);        
+      port.current.onMessage.addListener(function (msg) {
+        if (msg.action === 'SET_IS_WATCHING')
+          setIsWatching(msg.payload.isWatching);
+        if (msg.action === 'SET_IS_PANEL_OPEN')
+          setIsPanelOpen(msg.payload.isPanelOpen);
         setIsConnected(true);
         return true;
       });
-      port.current.onDisconnect.addListener(function() {
-        
-      });
+      port.current.onDisconnect.addListener(function () {});
     } catch (error) {
       // console.error({ message: `port couldn't connect `, error });
     }
@@ -29,53 +28,69 @@ const Popup = () => {
     return () => {
       // port.current.disconnect();
       port.current = null;
-    }
+    };
   }, [isPanelOpen]);
 
-  function resetPosture(){    
+  function resetPosture() {
     try {
-    
-      port.current && port.current.postMessage({ action: "RESET_POSTURE" });
+      port.current && port.current.postMessage({ action: 'RESET_POSTURE' });
       setStatus('Posture Reset at current position');
-      setTimeout(() => setStatus(''),2500);
+      setTimeout(() => setStatus(''), 2500);
     } catch (error) {
       console.log({ message: `resetPosture`, error });
     }
   }
-  async function toggleWatching(){
+  async function toggleWatching() {
     try {
-      port.current && port.current.postMessage({ action: "TOGGLE_WATCHING", payload: { isWatching: !isWatching } });
-    
-      setIsWatching(isWatching => !isWatching);
+      port.current &&
+        port.current.postMessage({
+          action: 'TOGGLE_WATCHING',
+          payload: { isWatching: !isWatching },
+        });
+
+      setIsWatching((isWatching) => !isWatching);
     } catch (error) {
       console.log({ message: `toggleWatching`, error });
     }
   }
-  async function openVideoPopup(){
-    chrome.windows.create({ url: "options.html", type: "popup", height: 350, width:700 })
+  async function openVideoPopup() {
+    chrome.windows.create({
+      url: 'options.html',
+      type: 'popup',
+      height: 350,
+      width: 700,
+    });
     await setIsPanelOpen(true);
-    // TODO: handle reconnect from popup after options panel opens 
+    // TODO: handle reconnect from popup after options panel opens
     // faking it for now by forcing reload of page
     setTimeout(() => window.location.reload(), 600);
   }
   return (
     <div className="popup-wrapper">
       <h1 className="title">
-      <span>Posture!</span>
-      <span>Posture!</span>
-      <span>Posture!</span>
+        <span>Posture!</span>
+        <span>Posture!</span>
+        <span>Posture!</span>
       </h1>
-      {!isWatching && !isPanelOpen && <button 
-        className="btn btn-open"
-        onClick={()=> openVideoPopup()}>Open Popup</button>
-      }
-      {isWatching && <button 
-        className="btn btn-reset"
-        onClick={()=> resetPosture()}>Reset Posture</button>}
-        
-       {isConnected && <button 
-       className={`btn ${isWatching ? 'btn-stop' : 'btn-start'}`}
-       onClick={()=> toggleWatching()}>{isWatching ? 'Stop' : 'Start'}</button>}
+      {!isWatching && !isPanelOpen && (
+        <button className="btn btn-open" onClick={() => openVideoPopup()}>
+          Open Popup
+        </button>
+      )}
+      {isWatching && (
+        <button className="btn btn-reset" onClick={() => resetPosture()}>
+          Reset Posture
+        </button>
+      )}
+
+      {isConnected && (
+        <button
+          className={`btn ${isWatching ? 'btn-stop' : 'btn-start'}`}
+          onClick={() => toggleWatching()}
+        >
+          {isWatching ? 'Stop' : 'Start'}
+        </button>
+      )}
 
       <p>{status}</p>
     </div>

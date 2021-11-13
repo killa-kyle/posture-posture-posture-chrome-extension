@@ -1,12 +1,11 @@
 <img src="src/assets/img/icon-128.png" width="64"/>
 
-# Posture Chrome Extension 
+# Posture Chrome Extension
 
 This is a Chrome Extension to help you keep track of your posture while surfing the web
 
-
-
 ## technologies included
+
 - [Chrome Extension Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-overview/)
 - [React 17](https://reactjs.org)
 - [Webpack 5](https://webpack.js.org/)
@@ -15,7 +14,6 @@ This is a Chrome Extension to help you keep track of your posture while surfing 
 - [eslint-config-react-app](https://www.npmjs.com/package/eslint-config-react-app)
 - [Prettier](https://prettier.io/)
 - [TypeScript](https://www.typescriptlang.org/)
-
 
 ## Installing and Running
 
@@ -33,4 +31,3 @@ This is a Chrome Extension to help you keep track of your posture while surfing 
    3. Click on `Load unpacked extension`
    4. Select the `build` folder.
 8. Happy hacking.
-
