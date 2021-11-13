@@ -37,24 +37,25 @@
 .posture-status-bar {
     position: fixed;
     bottom: 20px;
-    right: 20px;
-    left: 20px;
+    right: 20px;    
     padding: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 60px;
-
-    transform: translateY(-100px);
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    height: 24px;
+    min-width: 100px;
+    transform: translateY(1000px); 
     font-weight: bold;
-    font-size: 18px;
+    
     color: #444;
-    text-align: center;
     overflow: hidden;
     z-index: 999999;
-    transition: all .3s ease-out;
+    transition: all .5s ease-out;
     user-select: none;
-    background-color: #ffff;
     outline: 1px solid #303030;
     box-shadow: 0.9ch 0.9ch rgba(0, 0, 0, 0.8);
 }
@@ -73,8 +74,9 @@
 
 .good-posture .posture-status-bar {
     background-color: var(--kr-magic-mint);
-    transform: translateY(0);
-    display: none;
+    transition: all .5s ease-out;
+    transform: translateY(100px);
+    /* display: none; */
 }
 
 .bad-posture .posture-status-bar {

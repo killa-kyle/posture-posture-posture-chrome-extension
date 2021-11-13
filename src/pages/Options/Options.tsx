@@ -3,7 +3,12 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 // import * as tf from "@tensorflow/tfjs-core";
 import '@tensorflow/tfjs-backend-webgl';
 import Webcam from 'react-webcam';
-import { drawGoodPostureHeight } from './modules/draw_utils';
+import {
+  drawKeypoints,
+  drawSkeleton,
+  drawGoodPostureHeight,
+  drawCanvas
+} from './modules/draw_utils';
 import './Options.css';
 
 const Options = () => {
@@ -11,13 +16,13 @@ const Options = () => {
   let GOOD_POSTURE_POSITION = useRef<any>(null);
 
   let currentPosturePosition = useRef<any>(null);
-  const GOOD_POSTURE_DEVIATION = 20;
+
+
+  let GOOD_POSTURE_DEVIATION = useRef(25);
   const DETECTION_RATE = 100; // rate at which the pose detection is performed in ms
 
   // the current moveNet model object
   let detector: any | null = null;
-  // this object holds the port when connected
-  let contentPort = useRef<any>(null);
 
   // set up our camera and canvas refs to use later
   const camRef = useRef<any>(null);
@@ -30,6 +35,8 @@ const Options = () => {
   // handle the selection of the webcam
   const [deviceId, setDeviceId] = useState('');
   const [devices, setDevices] = useState([]);
+
+  let portRef = useRef<any>(null);
 
   /**
    * Starts the pose detection by loading the model and kicking off the detection loop
@@ -89,7 +96,7 @@ const Options = () => {
         return;
 
       handlePose(poses);
-      drawCanvas(poses, video, videoWidth, videoHeight, canvasRef);
+      drawCanvas(poses, video, videoWidth, videoHeight, canvasRef, GOOD_POSTURE_POSITION.current);
     }
   };
 
@@ -114,15 +121,11 @@ const Options = () => {
         );
       }
 
-      // console.log(`
-      // baseline: ${Math.floor(GOOD_POSTURE_POSITION)}\n
-      // currentPos: ${Math.floor(currentPosturePosition.current)}`);
-
       // handle the logic for off-posture position
       if (
         Math.abs(
           currentPosturePosition.current - GOOD_POSTURE_POSITION.current
-        ) > GOOD_POSTURE_DEVIATION
+        ) > GOOD_POSTURE_DEVIATION.current
       ) {
         handlePosture({ posture: 'bad' });
       }
@@ -130,7 +133,7 @@ const Options = () => {
       if (
         Math.abs(
           currentPosturePosition.current - GOOD_POSTURE_POSITION.current
-        ) < GOOD_POSTURE_DEVIATION
+        ) < GOOD_POSTURE_DEVIATION.current
       ) {
         handlePosture({ posture: 'good' });
       }
@@ -139,47 +142,15 @@ const Options = () => {
     }
   };
 
-  /**
-   * Draws the keypoints and skeleton on the canvas
-   *
-   * @param {(obj[])} Array of objects
-   * @param {(obj)} video object
-   * @param {(int)} video width
-   * @param {(int)} video height
-   * @param {(obj)} canvas object
-   * @returns void
-   * @memberof Options
-   */
-  const drawCanvas = (
-    poses: { keypoints: any }[],
-    video: any,
-    videoWidth: any,
-    videoHeight: any,
-    canvas: any
-  ) => {
-    if (canvas.current == null) return;
-    const ctx = canvas.current.getContext('2d');
 
-    canvas.current.width = videoWidth;
-    canvas.current.height = videoHeight;
-
-    if (poses[0].keypoints != null) {
-      // drawKeypoints(poses[0].keypoints, ctx);
-      // drawSkeleton(poses[0].keypoints, poses[0].id, ctx);
-      drawGoodPostureHeight(
-        poses[0].keypoints,
-        ctx,
-        GOOD_POSTURE_POSITION.current
-      );
-    }
-  };
 
   // pass the message to the content script
   function handlePosture(msg: { baseline?: any; posture?: any }) {
     // console.log(msg);
     if (msg.baseline) GOOD_POSTURE_POSITION.current = msg.baseline;
-    if (msg.posture)
-      contentPort.current && contentPort.current.postMessage(msg);
+    if (msg.posture) {
+      portRef.current.postMessage(msg);
+    }
   }
 
   // event handlers for the two buttons on the options page
@@ -224,16 +195,9 @@ const Options = () => {
 
   // connect and reconnect to ports when watching is toggled
   useEffect(() => {
-    // connect to the common port
+    // connect to port for messaging to content script
     chrome.runtime.onConnect.addListener(function (port) {
-      if (port.name === 'watch-posture') {
-        contentPort.current = port;
 
-
-        port.onDisconnect.addListener((event) => {
-          contentPort.current = null;
-        });
-      }
       if (port.name === 'set-options') {
         // send 'isWatching' and the panel status to popup script
         port.postMessage({
@@ -247,12 +211,18 @@ const Options = () => {
 
         // handle options sent from the popup script
         port.onMessage.addListener(async function (msg) {
+
+          if (msg.action === 'SET_GOOD_POSTURE_DEVIATION') {
+            if (!msg.payload.GOOD_POSTURE_DEVIATION) return;
+            GOOD_POSTURE_DEVIATION.current = msg.payload.GOOD_POSTURE_DEVIATION;
+          }
+
           if (msg.action === 'RESET_POSTURE') {
             GOOD_POSTURE_POSITION.current = null;
             // console.log('posture baseline reset');
           }
           if (msg.action === 'TOGGLE_WATCHING') {
-            if (!msg.payload.isWatching) return
+            if (msg.payload.isWatching === null) return;
             setIsWatching(msg.payload.isWatching);
           }
         });
@@ -266,6 +236,9 @@ const Options = () => {
   // kick off the model loading and pose detection
   useEffect(() => {
     loadMoveNet();
+
+    // connect to the background script 
+    portRef.current = chrome.runtime.connect({ name: "relay-detection" });
   }, []);
 
   useEffect(() => {
@@ -295,7 +268,8 @@ const Options = () => {
               <div>
                 <button
                   className={`${isWatching ? 'btn-stop' : 'btn-start'}`}
-                  onClick={handleToggleCamera}>
+                  onClick={handleToggleCamera}
+                >
                   {!isWatching ? 'Start' : 'Stop'}
                 </button>
                 <p>Toggle the posture tracking</p>

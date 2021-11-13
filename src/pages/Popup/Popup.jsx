@@ -10,6 +10,7 @@ const Popup = () => {
 
   useEffect(() => {
     try {
+
       port.current = chrome.runtime.connect({ name: "set-options" });
 
       port.current.onMessage.addListener(function(msg) {
@@ -26,7 +27,7 @@ const Popup = () => {
     }
 
     return () => {
-      port.current.disconnect();
+      // port.current.disconnect();
       port.current = null;
     }
   }, [isPanelOpen]);

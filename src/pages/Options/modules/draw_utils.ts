@@ -1,11 +1,47 @@
 // https://github.com/tensorflow/tfjs-models/blob/9b5d3b663638752b692080145cfb123fa324ff11/pose-detection/demos/live_video/src/camera.js
 import * as poseDetection from "@tensorflow-models/pose-detection";
 
+
+/**
+ * Draws the keypoints and skeleton on the canvas
+ *
+ * @param {(obj[])} Array of objects
+ * @param {(obj)} video object
+ * @param {(int)} video width
+ * @param {(int)} video height
+ * @param {(obj)} canvas object
+ * @returns void
+ * @memberof Options
+ */
+export const drawCanvas = (
+  poses: { keypoints: any }[],
+  video: any,
+  videoWidth: any,
+  videoHeight: any,
+  canvas: any,
+  goodPostureBaseLine: any
+) => {
+  if (canvas.current == null) return;
+  const ctx = canvas.current.getContext('2d');
+
+  canvas.current.width = videoWidth;
+  canvas.current.height = videoHeight;
+
+  if (poses[0].keypoints != null) {
+    drawKeypoints(poses[0].keypoints, ctx, goodPostureBaseLine);
+    drawGoodPostureHeight(poses[0].keypoints, ctx, goodPostureBaseLine);
+    // drawSkeleton(poses[0].keypoints, poses[0].id, ctx);
+  }
+};
+
 /**
  * Draw the keypoints on the video.
  * @param keypoints A list of keypoints.
  */
-export function drawKeypoints(keypoints: any, ctx: any) {
+export function drawKeypoints(keypoints: any, ctx: any, currentGoodPostureHeight: any) {
+  const currentPostureHeight = keypoints[2].y;
+  const delta = currentPostureHeight - currentGoodPostureHeight
+
   const keypointInd = poseDetection.util.getKeypointIndexBySide(
     poseDetection.SupportedModels.MoveNet
   );
@@ -13,16 +49,22 @@ export function drawKeypoints(keypoints: any, ctx: any) {
   ctx.strokeStyle = "White";
   ctx.lineWidth = 1;
 
+  ctx.fillStyle = "rgba(0, 255, 0, 0.9)"; // green if delta is positive
+  if (delta > 25 || delta < -25) {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.9)"; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
+  }
+
+
   for (const i of keypointInd.middle) {
     drawKeypoint(keypoints[i], ctx);
   }
 
-  ctx.fillStyle = "Green";
+  // ctx.fillStyle = "Green";
   for (const i of keypointInd.left) {
     drawKeypoint(keypoints[i], ctx);
   }
 
-  ctx.fillStyle = "Orange";
+  // ctx.fillStyle = "Orange";
   for (const i of keypointInd.right) {
     drawKeypoint(keypoints[i], ctx);
   }
@@ -38,7 +80,7 @@ function drawKeypoint(keypoint: any, ctx: any) {
     circle.arc(keypoint.x, keypoint.y, 4, 0, 2 * Math.PI);
 
     ctx.fill(circle);
-    ctx.stroke(circle);
+    // ctx.stroke(circle);
   }
 }
 
@@ -94,13 +136,16 @@ export function drawGoodPostureHeight(keypoints: any, ctx: any, currentGoodPostu
   // ctx.strokeStyle = "White";
   // ctx.lineWidth = 2;
 
-  // ctx.beginPath(); // Start a new path
-  // ctx.moveTo(0, currentPostureHeight); // Move the pen to (30, 50)
-  // ctx.lineTo(800, currentPostureHeight); // Draw a line to (150, 100)
-  // ctx.stroke(); // Render the path
+  ctx.beginPath(); // Start a new path
+  ctx.moveTo(0, currentPostureHeight); // Move the pen to (30, 50)
+  ctx.lineTo(800, currentPostureHeight); // Draw a line to (150, 100)
+  ctx.stroke(); // Render the path
 
   // draw difference between current posture height and good posture height
   ctx.fillStyle = "rgba(0, 255, 0, 0.5)"; // green if delta is positive
-  if (delta > 20 || delta < -20) ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-  ctx.fillRect(0, currentGoodPostureHeight, 800, delta);
+  if (delta > 25 || delta < -25) {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.5)"; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
+  }
+
+  // ctx.fillRect(0, currentGoodPostureHeight, 800, delta);
 }
