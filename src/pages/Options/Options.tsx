@@ -16,8 +16,8 @@ const Options = () => {
 
   let currentPosturePosition = useRef<any>(null);
 
-  let connections = useRef<any>({});
-  const GOOD_POSTURE_DEVIATION = 20;
+
+  let GOOD_POSTURE_DEVIATION = useRef(25);
   const DETECTION_RATE = 100; // rate at which the pose detection is performed in ms
 
   // the current moveNet model object
@@ -34,6 +34,8 @@ const Options = () => {
   // handle the selection of the webcam
   const [deviceId, setDeviceId] = useState('');
   const [devices, setDevices] = useState([]);
+
+  let portRef = useRef<any>(null);
 
   /**
    * Starts the pose detection by loading the model and kicking off the detection loop
@@ -126,7 +128,7 @@ const Options = () => {
       if (
         Math.abs(
           currentPosturePosition.current - GOOD_POSTURE_POSITION.current
-        ) > GOOD_POSTURE_DEVIATION
+        ) > GOOD_POSTURE_DEVIATION.current
       ) {
         handlePosture({ posture: 'bad' });
       }
@@ -134,7 +136,7 @@ const Options = () => {
       if (
         Math.abs(
           currentPosturePosition.current - GOOD_POSTURE_POSITION.current
-        ) < GOOD_POSTURE_DEVIATION
+        ) < GOOD_POSTURE_DEVIATION.current
       ) {
         handlePosture({ posture: 'good' });
       }
@@ -183,14 +185,7 @@ const Options = () => {
     // console.log(msg);
     if (msg.baseline) GOOD_POSTURE_POSITION.current = msg.baseline;
     if (msg.posture) {
-      // contentPort.current && contentPort.current.postMessage(msg);
-      let receiver;
-      for (let channel in connections.current) {
-        receiver = connections.current[channel];
-        if (!receiver.name.includes('watch-posture')) return;
-
-        receiver.postMessage(msg);
-      }
+      portRef.current.postMessage(msg);
     }
   }
 
@@ -238,22 +233,6 @@ const Options = () => {
   useEffect(() => {
     // connect to port for messaging to content script
     chrome.runtime.onConnect.addListener(function (port) {
-      // console.log('connected', connections.current)
-      if (port.name.includes('watch-posture')) {
-        // contentPort.current = port;
-        connections.current[port.name] = port;
-
-        port.onDisconnect.addListener((event) => {
-          // contentPort.current = null;
-
-          // remove the port from the connections obejct
-          connections.current = Object.fromEntries(
-            Object.entries(connections.current).filter(
-              ([key]) => key !== port.name
-            )
-          );
-        });
-      }
 
       if (port.name === 'set-options') {
         // send 'isWatching' and the panel status to popup script
@@ -268,6 +247,11 @@ const Options = () => {
 
         // handle options sent from the popup script
         port.onMessage.addListener(async function (msg) {
+
+          if (msg.action === 'SET_GOOD_POSTURE_DEVIATION') {
+            if (!msg.payload.GOOD_POSTURE_DEVIATION) return;
+            GOOD_POSTURE_DEVIATION.current = msg.payload.GOOD_POSTURE_DEVIATION;
+          }
 
           if (msg.action === 'RESET_POSTURE') {
             GOOD_POSTURE_POSITION.current = null;
@@ -288,6 +272,9 @@ const Options = () => {
   // kick off the model loading and pose detection
   useEffect(() => {
     loadMoveNet();
+
+    // connect to the background script 
+    portRef.current = chrome.runtime.connect({ name: "relay-detection" });
   }, []);
 
   useEffect(() => {

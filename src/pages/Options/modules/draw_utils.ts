@@ -101,6 +101,6 @@ export function drawGoodPostureHeight(keypoints: any, ctx: any, currentGoodPostu
 
   // draw difference between current posture height and good posture height
   ctx.fillStyle = "rgba(0, 255, 0, 0.5)"; // green if delta is positive
-  if (delta > 20 || delta < -20) ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+  if (delta > 25 || delta < -25) ctx.fillStyle = "rgba(255, 0, 0, 0.5)"; // TODO: make this a configurable parameter to match the GOOD_POSTURE_DEVIATION val
   ctx.fillRect(0, currentGoodPostureHeight, 800, delta);
 }
