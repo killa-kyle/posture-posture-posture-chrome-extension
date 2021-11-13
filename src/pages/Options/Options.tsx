@@ -3,7 +3,7 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 // import * as tf from "@tensorflow/tfjs-core";
 import '@tensorflow/tfjs-backend-webgl';
 import Webcam from 'react-webcam';
-import { drawGoodPostureHeight } from './modules/draw_utils';
+import { drawKeypoints, drawSkeleton, drawGoodPostureHeight } from './modules/draw_utils';
 import './Options.css';
 
 const Options = () => {
@@ -11,6 +11,8 @@ const Options = () => {
   let GOOD_POSTURE_POSITION = useRef<any>(null);
 
   let currentPosturePosition = useRef<any>(null);
+
+  let connections = useRef<any>({});
   const GOOD_POSTURE_DEVIATION = 20;
   const DETECTION_RATE = 100; // rate at which the pose detection is performed in ms
 
@@ -178,8 +180,18 @@ const Options = () => {
   function handlePosture(msg: { baseline?: any; posture?: any }) {
     // console.log(msg);
     if (msg.baseline) GOOD_POSTURE_POSITION.current = msg.baseline;
-    if (msg.posture)
-      contentPort.current && contentPort.current.postMessage(msg);
+    if (msg.posture) {
+      // contentPort.current && contentPort.current.postMessage(msg);
+      var receiver;
+      for (var channel in connections.current) {
+        receiver = connections.current[channel];
+
+        if (!receiver.name.includes('watch-posture')) return
+        receiver.postMessage(msg);
+
+      }
+    }
+
   }
 
   // event handlers for the two buttons on the options page
@@ -226,40 +238,51 @@ const Options = () => {
   useEffect(() => {
     // connect to the common port
     chrome.runtime.onConnect.addListener(function (port) {
-      if (port.name === 'watch-posture') {
-        contentPort.current = port;
+      connections.current[port.name] = port;
+      console.log('connected', connections.current)
+      if (port.name.includes('watch-posture')) {
+        // contentPort.current = port;
+
+
+
 
 
         port.onDisconnect.addListener((event) => {
-          contentPort.current = null;
-        });
-      }
-      if (port.name === 'set-options') {
-        // send 'isWatching' and the panel status to popup script
-        port.postMessage({
-          action: 'SET_IS_WATCHING',
-          payload: { isWatching },
-        });
-        port.postMessage({
-          action: 'SET_IS_PANEL_OPEN',
-          payload: { isPanelOpen: IS_PANEL_OPEN },
+          // contentPort.current = null;
+          connections.current = Object.fromEntries(Object.entries(connections.current).filter(([key]) => key !== port.name));
+
+          console.log('disconnected', connections.current)
         });
 
-        // handle options sent from the popup script
-        port.onMessage.addListener(async function (msg) {
-          if (msg.action === 'RESET_POSTURE') {
-            GOOD_POSTURE_POSITION.current = null;
-            // console.log('posture baseline reset');
-          }
-          if (msg.action === 'TOGGLE_WATCHING') {
-            if (!msg.payload.isWatching) return
-            setIsWatching(msg.payload.isWatching);
-          }
-        });
-        port.onDisconnect.addListener((event) => {
-          // console.log("port disconnected", event)
-        });
+
+
       }
+      // if (port.name === 'set-options') {
+      //   // send 'isWatching' and the panel status to popup script
+      //   port.postMessage({
+      //     action: 'SET_IS_WATCHING',
+      //     payload: { isWatching },
+      //   });
+      //   port.postMessage({
+      //     action: 'SET_IS_PANEL_OPEN',
+      //     payload: { isPanelOpen: IS_PANEL_OPEN },
+      //   });
+
+      //   // handle options sent from the popup script
+      //   port.onMessage.addListener(async function (msg) {
+      //     if (msg.action === 'RESET_POSTURE') {
+      //       GOOD_POSTURE_POSITION.current = null;
+      //       // console.log('posture baseline reset');
+      //     }
+      //     if (msg.action === 'TOGGLE_WATCHING') {
+      //       if (!msg.payload.isWatching) return
+      //       setIsWatching(msg.payload.isWatching);
+      //     }
+      //   });
+      //   port.onDisconnect.addListener((event) => {
+      //     // console.log("port disconnected", event)
+      //   });
+      // }
     });
   }, [isWatching]);
 

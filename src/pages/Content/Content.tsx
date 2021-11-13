@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 const BAD_POSTURE = "bad";
 const GOOD_POSTURE = "good";
-const PORT_NAME = "watch-posture";
+const PORT_NAME = `watch-posture-${Math.floor(Math.random() * 1000)}`;
 
 const Content = () => {
   const [currentPosture, setCurrentPosture] = useState<String | null>(null);
@@ -20,6 +20,7 @@ const Content = () => {
       port.current.onDisconnect.addListener(function () {
         document.body.classList.add("good-posture");
         document.body.classList.remove("bad-posture");
+        console.log("Disconnected from the extension backend");
       });
     } catch (error) {
       console.error({ message: `port couldn't connect `, error });
@@ -40,7 +41,7 @@ const Content = () => {
 
   return <>{currentPosture &&
     <div className="posture-status-bar">
-      {currentPosture === GOOD_POSTURE ? "Good Posture!" : "Sit Up Straight!"}
+      {currentPosture === GOOD_POSTURE ? "" : "Sit Up Straight!"}
     </div>
   }</>;
 };

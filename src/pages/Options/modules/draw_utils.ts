@@ -38,7 +38,7 @@ function drawKeypoint(keypoint: any, ctx: any) {
     circle.arc(keypoint.x, keypoint.y, 4, 0, 2 * Math.PI);
 
     ctx.fill(circle);
-    ctx.stroke(circle);
+    // ctx.stroke(circle);
   }
 }
 
