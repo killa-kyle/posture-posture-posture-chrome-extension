@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef} from "react";
-
+import "./Popup.css";
 const Popup = () => {
   const [status, setStatus] = useState('');
   const [isWatching, setIsWatching] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   let port = useRef(null);
 
@@ -14,20 +15,25 @@ const Popup = () => {
       port.current.onMessage.addListener(function(msg) {
         if (msg.action === 'SET_IS_WATCHING') setIsWatching(msg.payload.isWatching);
         if (msg.action === 'SET_IS_PANEL_OPEN') setIsPanelOpen(msg.payload.isPanelOpen);        
-       
+        setIsConnected(true);
         return true;
       });
       port.current.onDisconnect.addListener(function() {
         
       });
     } catch (error) {
-      console.error({ message: `port couldn't connect `, error });
+      // console.error({ message: `port couldn't connect `, error });
+    }
+
+    return () => {
+      port.current.disconnect();
+      port.current = null;
     }
   }, [isPanelOpen]);
 
   function resetPosture(){    
     try {
-      // port = port || chrome.runtime.connect({ name: "set-options" });    
+    
       port.current && port.current.postMessage({ action: "RESET_POSTURE" });
       setStatus('Posture Reset at current position');
       setTimeout(() => setStatus(''),2500);
@@ -37,7 +43,6 @@ const Popup = () => {
   }
   async function toggleWatching(){
     try {
-      // port = port || chrome.runtime.connect({ name: "set-options" });
       port.current && port.current.postMessage({ action: "TOGGLE_WATCHING", payload: { isWatching: !isWatching } });
     
       setIsWatching(isWatching => !isWatching);
@@ -46,52 +51,30 @@ const Popup = () => {
     }
   }
   async function openVideoPopup(){
-    chrome.windows.create({ url: "options.html", type: "popup", height: 280, width:700 })
+    chrome.windows.create({ url: "options.html", type: "popup", height: 350, width:700 })
     await setIsPanelOpen(true);
     // TODO: handle reconnect from popup after options panel opens 
     // faking it for now by forcing reload of page
     setTimeout(() => window.location.reload(), 600);
   }
   return (
-    <div style={{
-      backgroundColor: 'thistle',
-      padding: '10px',
-    }}>
-      <h1>Posture!Posture!Posture!</h1>
+    <div className="popup-wrapper">
+      <h1 className="title">
+      <span>Posture!</span>
+      <span>Posture!</span>
+      <span>Posture!</span>
+      </h1>
       {!isWatching && !isPanelOpen && <button 
-        style={{
-          backgroundColor: 'sandybrown',
-          border: '1px solid #303030',
-          margin: '10px',
-          padding: '6px 11px',
-          boxShadow: '0.5ch 0.5ch rgb(0 0 0 / 80%)',
-          transform: 'translate(-1px, -1px)',
-          transition: 'all .05s ease-in'
-        }}
+        className="btn btn-open"
         onClick={()=> openVideoPopup()}>Open Popup</button>
       }
       {isWatching && <button 
-        style={{
-          backgroundColor: 'sandybrown',
-          border: '1px solid #303030',
-          margin: '10px',
-          padding: '6px 11px',
-          boxShadow: '0.5ch 0.5ch rgb(0 0 0 / 80%)',
-          transform: 'translate(-1px, -1px)',
-          transition: 'all .05s ease-in'
-        }}
-        onClick={()=> resetPosture()}>Reset Position</button>}
-       <button 
-        style={{
-          backgroundColor: isWatching ? 'tomato' : '#8bc34a',
-          border: '1px solid #303030',
-          margin: '10px',
-          padding: '6px 11px',
-          boxShadow: '0.5ch 0.5ch rgb(0 0 0 / 80%)',
-          transform: 'translate(-1px, -1px)',
-          transition: 'all .05s ease-in'
-        }}
-        onClick={()=> toggleWatching()}>{isWatching ? 'Stop' : 'Start'}</button>
+        className="btn btn-reset"
+        onClick={()=> resetPosture()}>Reset Posture</button>}
+        
+       {isConnected && <button 
+       className={`btn ${isWatching ? 'btn-stop' : 'btn-start'}`}
+       onClick={()=> toggleWatching()}>{isWatching ? 'Stop' : 'Start'}</button>}
 
       <p>{status}</p>
     </div>

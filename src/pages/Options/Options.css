@@ -5,6 +5,23 @@
     box-sizing: border-box;
 }
 
+:root {
+    --cream: hsla(56, 85%, 89%, 1);
+    --almond: hsla(27, 92%, 90%, 1);
+    --baby-pink: hsla(356, 100%, 91%, 1);
+    --pink-lavender: hsla(311, 64%, 85%, 1);
+    --mauve: hsla(263, 64%, 84%, 1);
+    --baby-blue-eyes: hsla(215, 77%, 80%, 1);
+    --non-photo-blue: hsla(195, 82%, 76%, 1);
+    --electric-blue: hsla(185, 84%, 76%, 1);
+    --magic-mint: hsla(167, 82%, 78%, 1);
+    --celadon: hsla(126, 89%, 85%, 1);
+
+    --color-background: var(--pink-lavender);
+    --color-text: #303030;
+    --color-primary: var(--magic-mint);
+    --box-height: 300px;
+}
 
 body {
     margin: 0;
@@ -15,7 +32,8 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
-    background-color: thistle;
+    background-color: var(--color-background);
+    background: linear-gradient(80deg, rgba(241, 192, 232, 1) 0%, rgba(142, 236, 245, 1) 100%);
 
     display: flex;
     flex-wrap: wrap;
@@ -23,6 +41,7 @@ body {
     justify-content: center;
     width: 100%;
     min-height: 100vh;
+
 }
 
 
@@ -45,25 +64,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 200px;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    padding: 8px;
-    background-color: #ffff;
-    outline: 1px solid #303030;
+    min-width: var(--box-height);
+    min-height: var(--box-height);
+    background-color: var(--mauve);
+    outline: 1px solid var(--color-text);
     box-shadow: 0.9ch 0.9ch rgba(0, 0, 0, 0.8);
 }
 
 .camera-container video {
     position: absolute;
-    width: 200px;
-    height: 200px;
+    width: var(--box-height);
+    height: var(--box-height);
+    max-width: 100%;
+    max-height: 100%;
     object-fit: cover;
     top: 0;
     left: 0;
-    transform: scale(2.5);
-    border-radius: 50%;
+    /* transform: scale(2.5); */
+    /* border-radius: 50%; */
     padding: 8px;
     background-color: #ffff;
     z-index: 1;
@@ -72,33 +90,40 @@ body {
 
 .camera-container canvas {
     position: absolute;
-    width: 200px;
-    height: 200px;
-    transform: scale(2.5);
+    width: var(--box-height);
+    height: var(--box-height);
+    /* transform: scale(2.5); */
     object-fit: cover;
-    border-radius: 50%;
     padding: 8px;
     z-index: 1;
-    /* background-color: #ffff;     */
-
 }
 
 .card {
     padding: 16px;
     grid-template-rows: 1fr auto;
     background-color: #fff;
-    outline: 1px solid #303030;
-    margin: 0 4px .4em;
+    outline: 1px solid var(--color-text);
+    min-height: var(--box-height);
     box-shadow: 0.9ch 0.9ch rgba(0, 0, 0, 0.8);
 }
 
-.button-container {
-    display: flex;
+
+
+button {
+    background-color: var(--cream);
+}
+
+.btn-stop {
+    background-color: var(--baby-pink);
+}
+
+.btn-start {
+    background-color: var(--electric-blue);
 }
 
 .button-container div {
-    margin-top: 1rem;
-    margin-right: 1rem;
+    /* margin-top: 1rem; */
+    /* margin-right: 1rem; */
 }
 
 p {
@@ -106,8 +131,7 @@ p {
 }
 
 .button-container button {
-    border: 1px solid #303030;
-    background-color: sandybrown;
+    border: 1px solid var(--color-text);
     padding: 6px 11px;
     box-shadow: 0.5ch 0.5ch rgba(0, 0, 0, 0.8);
     transform: translate(-1px, -1px);

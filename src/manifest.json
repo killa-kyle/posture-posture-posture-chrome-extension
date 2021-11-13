@@ -3,11 +3,6 @@
   "name": "Posture!Posture!Posture!",
   "description": "Sit up Straight! This extension will help you track your posture as you browse with the help of your webcam.",
   "options_page": "options.html",
-  "background": {
-    "scripts": [
-      "background.bundle.js"
-    ]
-  },
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": "icon-34.png"

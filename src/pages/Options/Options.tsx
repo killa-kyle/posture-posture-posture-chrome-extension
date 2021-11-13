@@ -229,6 +229,7 @@ const Options = () => {
       if (port.name === 'watch-posture') {
         contentPort.current = port;
 
+
         port.onDisconnect.addListener((event) => {
           contentPort.current = null;
         });
@@ -248,9 +249,10 @@ const Options = () => {
         port.onMessage.addListener(async function (msg) {
           if (msg.action === 'RESET_POSTURE') {
             GOOD_POSTURE_POSITION.current = null;
-            console.log('posture baseline reset');
+            // console.log('posture baseline reset');
           }
           if (msg.action === 'TOGGLE_WATCHING') {
+            if (!msg.payload.isWatching) return
             setIsWatching(msg.payload.isWatching);
           }
         });
@@ -292,9 +294,7 @@ const Options = () => {
             <div className="button-container">
               <div>
                 <button
-                  style={{
-                    backgroundColor: isWatching ? 'tomato' : '#8bc34a',
-                  }}
+                  className={`${isWatching ? 'btn-stop' : 'btn-start'}`}
                   onClick={handleToggleCamera}>
                   {!isWatching ? 'Start' : 'Stop'}
                 </button>

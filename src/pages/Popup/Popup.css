@@ -1,45 +1,72 @@
-.App {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  text-align: center;
-  height: 100%;
-  padding: 10px;
-  background-color: #282c34;
+:root {
+    --cream: hsla(56, 85%, 89%, 1);
+    --almond: hsla(27, 92%, 90%, 1);
+    --baby-pink: hsla(356, 100%, 91%, 1);
+    --pink-lavender: hsla(311, 64%, 85%, 1);
+    --mauve: hsla(263, 64%, 84%, 1);
+    --baby-blue-eyes: hsla(215, 77%, 80%, 1);
+    --non-photo-blue: hsla(195, 82%, 76%, 1);
+    --electric-blue: hsla(185, 84%, 76%, 1);
+    --magic-mint: hsla(167, 82%, 78%, 1);
+    --celadon: hsla(126, 89%, 85%, 1);
+
+    --color-background: var(--pink-lavender);
+    --color-text: #303030;
+    --color-primary: var(--magic-mint);
+    --box-height: 300px;
 }
 
-.App-logo {
-  height: 30vmin;
-  pointer-events: none;
+body {
+    margin: 0;
+    padding: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    /* background-color: var(--color-background);
+    background: linear-gradient(80deg, rgba(241, 192, 232, 1) 0%, rgba(142, 236, 245, 1) 100%); */
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.popup-wrapper {
+    position: relative;
+    margin: 12px;
+    background-color: #fff;
+
+    padding: 16px;
+    /* grid-template-rows: 1fr auto; */
+    background-color: #fff;
+    outline: 1px solid var(--color-text);
+    /* min-height: var(--box-height); */
+    box-shadow: 0.9ch 0.9ch rgba(0, 0, 0, 0.8);
+
 }
 
-.App-header {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+.btn {
+    border: 1px solid var(--color-text);
+    background-color: var(--cream);
+    margin: 10px;
+    padding: 6px 11px;
+    box-shadow: 0.5ch 0.5ch rgba(0, 0, 0, 0.8);
+    transform: translate(-1px, -1px);
+    transition: all .05s ease-in;
 }
 
-.App-link {
-  color: #61dafb;
+
+.btn-stop {
+    background-color: var(--baby-pink);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.btn-start {
+    background-color: var(--electric-blue);
 }

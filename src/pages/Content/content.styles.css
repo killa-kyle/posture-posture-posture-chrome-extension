@@ -1,3 +1,21 @@
+:root {
+    --kr-cream: hsla(56, 85%, 89%, 1);
+    --kr-almond: hsla(27, 92%, 90%, 1);
+    --kr-baby-pink: hsla(356, 100%, 91%, 1);
+    --kr-pink-lavender: hsla(311, 64%, 85%, 1);
+    --kr-mauve: hsla(263, 64%, 84%, 1);
+    --kr-baby-blue-eyes: hsla(215, 77%, 80%, 1);
+    --kr-non-photo-blue: hsla(195, 82%, 76%, 1);
+    --kr-electric-blue: hsla(185, 84%, 76%, 1);
+    --kr-magic-mint: hsla(167, 82%, 78%, 1);
+    --kr-celadon: hsla(126, 89%, 85%, 1);
+
+    --kr-color-background: var(--kr-pink-lavender);
+    --kr-color-text: #303030;
+    --kr-color-primary: var(--kr-magic-mint);
+    --kr-box-height: 300px;
+}
+
 .good-posture>*:not(#kr-posture-app-content) {
     filter: blur(0px);
     transition: ease-out 0.3s;
@@ -54,12 +72,12 @@
 }
 
 .good-posture .posture-status-bar {
-    background-color: thistle;
+    background-color: var(--kr-magic-mint);
     transform: translateY(0);
     display: none;
 }
 
 .bad-posture .posture-status-bar {
-    background-color: orange;
+    background-color: var(--kr-pink-lavender);
     transform: translateY(0);
 }
