@@ -49,5 +49,5 @@ https://user-images.githubusercontent.com/6319238/141663339-4b05139f-adbf-4626-9
 - [TypeScript](https://www.typescriptlang.org/)
 
 ## TODO 
-- [] User adjustable posture deviation range
-- [] Indicate status of "Watching" or "Not Watching" in Browser Action Icon
+- [_] User adjustable posture deviation range
+- [X] Indicate status of "Watching" or "Not Watching" in Browser Action Icon
