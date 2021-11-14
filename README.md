@@ -8,6 +8,10 @@ This is a Chrome Extension to help you keep track of your posture while surfing 
 
 https://user-images.githubusercontent.com/6319238/141663339-4b05139f-adbf-4626-9de2-0160073671bb.mp4
 
+# How It Works
+<img src="src/assets/img/chrome-extension-screenshot-1280x800-step-1.png" width="600"/>
+<img src="src/assets/img/chrome-extension-screenshot-1280x800-step-2.png" width="600"/>
+<img src="src/assets/img/chrome-extension-screenshot-1280x800-step-3.png" width="600"/>
 
 ## Install from the Chrome Webstore (coming soon) 
 - COMING SOON
