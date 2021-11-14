@@ -25,10 +25,6 @@ const Popup = () => {
       // console.error({ message: `port couldn't connect `, error });
     }
 
-    return () => {
-      // port.current.disconnect();
-      port.current = null;
-    };
   }, [isPanelOpen]);
 
   function resetPosture() {
@@ -57,7 +53,7 @@ const Popup = () => {
     chrome.windows.create({
       url: 'options.html',
       type: 'popup',
-      height: 350,
+      height: 400,
       width: 700,
     });
     await setIsPanelOpen(true);
