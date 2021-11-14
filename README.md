@@ -4,6 +4,10 @@
 
 This is a Chrome Extension to help you keep track of your posture while surfing the web
 
+<img src="src/assets/img/chrome-extension-screenshot-1280x800-step-1.png" width="100%"/>
+<img src="src/assets/img/chrome-extension-screenshot-1280x800-step-2.png" width="100%"/>
+<img src="src/assets/img/chrome-extension-screenshot-1280x800-step-3.png" width="100%"/>
+
 ## technologies included
 
 - [Chrome Extension Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-overview/)
