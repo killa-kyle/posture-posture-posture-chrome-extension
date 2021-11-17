@@ -160,14 +160,14 @@ const Options = () => {
   // event handlers for the two buttons on the options page
   const handleToggleCamera = () => {
     setIsWatching((isCurrentlyWatching) => {
-      if(!isCurrentlyWatching){
-        chrome.browserAction.setBadgeText({text: "ON"}); 
-        document.title = 'TRACKING POSTURE - Posture!Posture!Posture!'
+      if (!isCurrentlyWatching) {
+        chrome.browserAction.setBadgeText({ text: 'ON' });
+        document.title = 'TRACKING POSTURE - Posture!Posture!Posture!';
       } else {
-        chrome.browserAction.setBadgeText({text: "OFF"});
+        chrome.browserAction.setBadgeText({ text: 'OFF' });
         document.title = 'Posture!Posture!Posture! - Options';
       }
-        
+
       return !isCurrentlyWatching;
     });
   };
@@ -238,7 +238,7 @@ const Options = () => {
             if (msg.payload.isWatching === null) return;
             setIsWatching(msg.payload.isWatching);
             chrome.browserAction.setBadgeText({
-              text: msg.payload.isWatching ? "ON" : "OFF"
+              text: msg.payload.isWatching ? 'ON' : 'OFF',
             });
           }
         });

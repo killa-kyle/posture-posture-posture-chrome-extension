@@ -1,4 +1,4 @@
-chrome.browserAction.setBadgeText({text: "OFF"});
+chrome.browserAction.setBadgeText({ text: 'OFF' });
 
 // connect to port for messaging to content script
 chrome.runtime.onConnect.addListener(function (port) {
@@ -6,7 +6,6 @@ chrome.runtime.onConnect.addListener(function (port) {
   if (port.name === 'relay-detection') {
     port.onMessage.addListener(handlePostureMessage);
   }
-
 });
 
 // handle posture messages from content script

@@ -24,7 +24,6 @@ const Popup = () => {
     } catch (error) {
       // console.error({ message: `port couldn't connect `, error });
     }
-
   }, [isPanelOpen]);
 
   function resetPosture() {
