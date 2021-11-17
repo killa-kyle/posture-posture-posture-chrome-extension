@@ -13,8 +13,8 @@ https://user-images.githubusercontent.com/6319238/141663339-4b05139f-adbf-4626-9
 <img src="src/assets/img/chrome-extension-screenshot-1280x800-step-2.png" width="600"/>
 <img src="src/assets/img/chrome-extension-screenshot-1280x800-step-3.png" width="600"/>
 
-## Install from the Chrome Webstore (coming soon) 
-- COMING SOON
+## Install from the Chrome Webstore
+- https://chrome.google.com/webstore/detail/posturepostureposture/ekleaenhplpaiincbdkbebmeccfgmbll
 
 ## Installing and Running In Developer Mode
 
@@ -32,9 +32,10 @@ https://user-images.githubusercontent.com/6319238/141663339-4b05139f-adbf-4626-9
 8. Launch the Extension.
    1. Open the `Options Popup` by clicking the button in the browser action menu
    2. Start the camera
-      - You'll need to allow camera access on first use
-   3. Wait for the Model Tracking to kick in (you'll need to make the Options window visible / active at least once for the tracking to work correctly )
-   4. surf the web with good posture!
+      ## You'll need to allow camera access on first use
+   3. Wait for the Model Tracking to kick in 
+      ## you'll need to make the Options window visible / active at least once for the tracking to work correctly
+   5. surf the web with good posture!
       - you can reset the "Good Posture" position with the browser action menu
 
 
