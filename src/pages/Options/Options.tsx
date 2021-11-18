@@ -121,10 +121,10 @@ const Options = () => {
       if (!rightEyePosition) return;
       if (GOOD_POSTURE_POSITION.current == null) {
         handlePosture({ baseline: currentPosturePosition.current });
-        console.log(
-          'Good Posture Height is set at ',
-          currentPosturePosition.current
-        );
+        // console.log(
+        //   'Good Posture Height is set at ',
+        //   currentPosturePosition.current
+        // );
       }
 
       // handle the logic for off-posture position
