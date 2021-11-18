@@ -37,6 +37,13 @@ const Options = () => {
 
   let portRef = useRef<any>(null);
 
+  // handle info popup
+  const [isOverlayShowing, setIsOverlayShowing] = useState(false);
+  const handleOverlayClick = () => {
+    setIsOverlayShowing(true);
+  }
+
+
   /**
    * Starts the pose detection by loading the model and kicking off the detection loop
    *
@@ -312,6 +319,20 @@ const Options = () => {
                 ))}
               </select>
             </div>
+            <div className="info-container">
+              <button className="btn-info" onClick={handleOverlayClick}>
+                Info
+              </button>
+            </div>
+            {/* overlay */}
+            {isOverlayShowing &&
+              <div className="overlay">
+                <h3>Posture!Posture!Posture!</h3>
+                <p>Made With Love by Kyle Rose in Portland, Oregon</p>
+                <p>version {chrome.runtime.getManifest().version}</p>
+                <button className="overlay-close-btn" onClick={() => setIsOverlayShowing(false)}>X</button>
+              </div>
+            }
           </div>
         </div>
       </div>

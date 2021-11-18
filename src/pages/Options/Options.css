@@ -58,6 +58,7 @@ body {
   width: auto;
   margin-top: 12px;
   overflow: hidden;
+  margin-bottom: 12px;
 }
 
 .camera-container {
@@ -129,7 +130,7 @@ p {
   margin-top: 1rem;
 }
 
-.button-container button {
+button {
   border: 1px solid var(--color-text);
   padding: 6px 11px;
   box-shadow: 0.5ch 0.5ch rgba(0, 0, 0, 0.8);
@@ -137,12 +138,48 @@ p {
   transition: all 0.05s ease-in;
 }
 
-.button-container button:hover {
+button:hover {
   background-color: whitesmoke;
   cursor: pointer;
 }
 
-.button-container button:active {
+button:active {
   transform: translate(0, 0);
   box-shadow: 0.2ch 0.2ch rgba(0, 0, 0, 0.8);
+}
+
+/* overlay styles */
+.btn-info {
+  background: rgba(142, 236, 245, 1);
+}
+.overlay {
+  position: absolute;
+  background: rgba(241, 192, 232, 1);
+  background: linear-gradient( 
+  80deg, rgba(241, 192, 232, 1) 0%, rgba(142, 236, 245, 1) 100% );
+  z-index: 3;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.overlay-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 0.5rem;
+  width: 38px;
+  border: 2px solid #e7c5e9;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+}
+.overlay-close-btn:hover {
+  color:rgba(0, 0, 0, 1)
 }
