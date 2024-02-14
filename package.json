@@ -7,6 +7,9 @@
     "type": "git",
     "url": "https://github.com/killa-kyle/posture-posture-posture-chrome-extension.git"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/webserver.js",
@@ -45,9 +48,9 @@
     "fs-extra": "^10.0.0",
     "html-loader": "^3.0.0",
     "html-webpack-plugin": "^5.5.0",
-    "node-sass": "^7.0.0",
+    "node-sass": "^9.0.0",
     "prettier": "^2.4.1",
-    "sass-loader": "^12.2.0",
+    "sass-loader": "^14.1.0",
     "source-map-loader": "^3.0.0",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.2.4",
