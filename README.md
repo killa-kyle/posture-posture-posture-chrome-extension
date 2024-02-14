@@ -33,7 +33,7 @@ For the extension to work as you browse it needs the "view all pages" permission
 
 ### Procedures:
 
-1. Check if your [Node.js](https://nodejs.org/) version is >= **14**.
+1. Check if your [Node.js](https://nodejs.org/) version is >= **20**.
 2. Clone this repository.
 3. Run `npm install` to install the dependencies.
 4. Run `npm start`
