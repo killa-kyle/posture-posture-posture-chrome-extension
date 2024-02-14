@@ -1,4 +1,4 @@
-chrome.browserAction.setBadgeText({ text: 'OFF' });
+chrome.action.setBadgeText({ text: 'OFF' });
 
 // connect to port for messaging to content script
 chrome.runtime.onConnect.addListener(function (port) {
